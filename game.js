@@ -42,6 +42,7 @@ class Actor {
       writable: false, // запретить присвоение
       // configurable: false // запретить удаление
     });
+    // this.type = "actor";
   }
 
   get left() {
@@ -69,8 +70,44 @@ class Actor {
     } //else if ((this.pos >= moveObj.pos && this.size <= moveObj.size) || (this.pos <= moveObj.pos && this.size <= moveObj.size) || (this.pos>= moveObj.pos && this.size >= moveObj.size)) {
     //   return true;
     // }
-    if ((this.pos - moveObj.pos)>=0 && (this.size - moveObj.size)<=0) {
+    if ((this.pos === moveObj.pos) && (this.size === moveObj.size)) {
       return true;
     }
+  }
+}
+
+// Object.defineProperty(this, "type", {
+//     value: 'actor',
+//     writable: false, // запретить присвоение
+//     // configurable: false // запретить удаление
+//   });
+
+class Level {
+  constructor(grid = [] , actors) {
+    this.grid = grid;
+    this.actors = actors;
+    this.player = {type: 'player'};
+    this.height = this.grid.length;
+    this.width = Math.max(...this.grid.reduce((memo, el) => {memo.push(el.length); return memo},[]));
+    this.status = null;
+    this.finishDelay = 1;
+  }
+
+  isFinished() {
+    if (this.status !=0 && this.finishDelay < 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  actorAt(moveObj) {
+    if (!(moveObj instanceof Actor) || (moveObj === undefined)) {
+      throw new Error ('объект не является объектом типа Actor');
+    }
+    if (Actor.isIntersect(moveObj) === false) {
+      return undefined;
+    }
+    return moveObj;
   }
 }
